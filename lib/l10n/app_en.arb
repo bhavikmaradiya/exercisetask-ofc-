@@ -1,0 +1,7 @@
+{
+  "appName": "ExerciseTask",
+  "equipmentNameBodyweight" : "Bodyweight",
+  "equipmentNameDumbbells" : "Dumbbells",
+  "equipmentNameBands" : "Bands",
+  "failedToUpdateEquipment" : "Failed to select your equipment"
+}
