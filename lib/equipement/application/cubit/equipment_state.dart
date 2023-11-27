@@ -10,7 +10,13 @@ part 'equipment_state.g.dart';
 abstract class EquipmentState with _$EquipmentState {
   const factory EquipmentState.initial() = _Initial;
 
-  const factory EquipmentState.failedToUpdate(List<EquipmentModel> oldList) = _FailedToUpdate;
+  const factory EquipmentState.loading() = _Loading;
+
+  const factory EquipmentState.snackBarShown(List<EquipmentModel> oldList) =
+      _SnackBarShown;
+
+  const factory EquipmentState.failedToUpdate(List<EquipmentModel> oldList) =
+      _FailedToUpdate;
 
   const factory EquipmentState.dataUpdated(List<EquipmentModel> equipmentList) =
       _DataUpdated;

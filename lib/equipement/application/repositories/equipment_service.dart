@@ -33,19 +33,25 @@ class EquipmentService {
 
   Future<List<EquipmentModel>?> invertSelectionById(int id) async {
     final savedEquipments = await getEquipments();
+    final selectionCount =
+        savedEquipments?.where((element) => element.isSelected).length;
     final indexToUpdate =
         savedEquipments?.indexWhere((element) => element.id == id);
     if (indexToUpdate != null && indexToUpdate != -1) {
       final equipmentToUpdate = savedEquipments![indexToUpdate];
-      savedEquipments[indexToUpdate] =
-          equipmentToUpdate.copyWith(isSelected: !equipmentToUpdate.isSelected);
-      final equipmentJson =
-          json.encode(savedEquipments.map((e) => e.toJson()).toList());
-      await _prefs?.setString(
-        PreferenceConfig.equipmentsJsonPref,
-        equipmentJson,
-      );
-      return savedEquipments;
+      if (equipmentToUpdate.isSelected ||
+          selectionCount == null ||
+          selectionCount < 3) {
+        savedEquipments[indexToUpdate] = equipmentToUpdate.copyWith(
+            isSelected: !equipmentToUpdate.isSelected);
+        final equipmentJson =
+            json.encode(savedEquipments.map((e) => e.toJson()).toList());
+        await _prefs?.setString(
+          PreferenceConfig.equipmentsJsonPref,
+          equipmentJson,
+        );
+        return savedEquipments;
+      }
     }
     return null;
   }

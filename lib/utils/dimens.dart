@@ -7,4 +7,6 @@ class Dimens {
   static const double equipmentBoxAndTextBetweenSpacing = 14;
   static const double equipmentCheckboxSize = 15;
   static const double equipmentCheckboxAroundSpacing = 9;
+  static const double equipmentScreenButtonsBottomMargin = 50;
+  static const double equipmentScreenButtonsSpacing = 18;
 }

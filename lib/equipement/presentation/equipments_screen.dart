@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import './widget/equipment_item.dart';
+import '../../utils/colors.dart';
+import '../../utils/dimens.dart';
 import '../application/cubit/equipment_cubit.dart';
 import '../application/cubit/equipment_state.dart';
 import '../domain/equipment/equipment_model.dart';
@@ -47,13 +50,28 @@ class _EquipmentsScreenState extends State<EquipmentsScreen> {
                   ),
                 );
               },
+              snackBarShown: (list) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      _localizations!.button2Snackbar,
+                    ),
+                  ),
+                );
+              },
             );
           },
           builder: (context, state) {
             return state.maybeWhen(
               orElse: SizedBox.new,
-              failedToUpdate: buildListWith,
-              dataUpdated: buildListWith,
+              loading: () => const Center(
+                child: CircularProgressIndicator(
+                  color: ColorUtils.blueColor,
+                ),
+              ),
+              failedToUpdate: _buildBodyWith,
+              dataUpdated: _buildBodyWith,
+              snackBarShown: _buildBodyWith,
             );
           },
         ),
@@ -61,10 +79,11 @@ class _EquipmentsScreenState extends State<EquipmentsScreen> {
     );
   }
 
-  Column buildListWith(List<EquipmentModel> list) {
+  Column _buildBodyWith(List<EquipmentModel> list) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        const Spacer(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: list
@@ -78,7 +97,50 @@ class _EquipmentsScreenState extends State<EquipmentsScreen> {
               )
               .toList(),
         ),
+        const Spacer(),
+        Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: Dimens.equipmentScreenButtonsSpacing.w,
+          ),
+          child: Row(
+            children: [
+              _buildButton(
+                text: _localizations!.button1Text,
+                onTap: () {
+                  _cubitState?.showLoader();
+                },
+              ),
+              SizedBox(
+                width: Dimens.equipmentScreenButtonsSpacing.w,
+              ),
+              _buildButton(
+                text: _localizations!.button2Text,
+                onTap: () {
+                  _cubitState?.showSnackBar();
+                },
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: Dimens.equipmentScreenButtonsBottomMargin.h,
+        ),
       ],
+    );
+  }
+
+  Expanded _buildButton({
+    required String text,
+    required Function onTap,
+  }) {
+    return Expanded(
+      child: MaterialButton(
+        onPressed: () => onTap(),
+        color: ColorUtils.blueColor,
+        child: Text(
+          text,
+        ),
+      ),
     );
   }
 }

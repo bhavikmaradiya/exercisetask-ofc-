@@ -8,6 +8,7 @@ import '../repositories/equipment_service.dart';
 class EquipmentCubit extends Cubit<EquipmentState> {
   late EquipmentService _equipmentService;
   List<EquipmentModel>? _equipmentList = [];
+  bool _isLoading = false;
 
   EquipmentCubit() : super(const EquipmentState.initial()) {
     _equipmentService = EquipmentService();
@@ -31,5 +32,23 @@ class EquipmentCubit extends Cubit<EquipmentState> {
   Future<void> _loadInitialData() async {
     _equipmentList = await _equipmentService.getEquipments();
     emit(EquipmentState.dataUpdated(_equipmentList ?? []));
+  }
+
+  Future<void> showSnackBar() async {
+    emit(EquipmentState.snackBarShown(_equipmentList ?? []));
+  }
+
+  Future<void> showLoader() async {
+    if (!_isLoading) {
+      _isLoading = true;
+      emit(const EquipmentState.loading());
+      await Future.delayed(
+        const Duration(milliseconds: 1000),
+        () {
+          _isLoading = false;
+          emit(EquipmentState.dataUpdated(_equipmentList ?? []));
+        },
+      );
+    }
   }
 }
